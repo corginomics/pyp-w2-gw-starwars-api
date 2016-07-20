@@ -11,7 +11,8 @@ class BaseModel(object):
         Dynamically assign all attributes in `json_data` as instance
         attributes of the Model.
         """
-        pass
+        for key, value in json_data.items():
+            setattr(self, key, value)
 
     @classmethod
     def get(cls, resource_id):
@@ -19,7 +20,9 @@ class BaseModel(object):
         Returns an object of current Model requesting data to SWAPI using
         the api_client.
         """
-        pass
+        resource_name = getattr(cls, "RESOURCE_NAME")
+        get_resource = getattr(api_client, "get_" + resource_name)
+        return cls(get_resource(resource_id))
 
     @classmethod
     def all(cls):
@@ -28,7 +31,7 @@ class BaseModel(object):
         later in charge of performing requests to SWAPI for each of the
         pages while looping.
         """
-        pass
+        return BaseQuerySet
 
 
 class People(BaseModel):
@@ -58,7 +61,7 @@ class BaseQuerySet(object):
         pass
 
     def __iter__(self):
-        pass
+        return self
 
     def __next__(self):
         """
